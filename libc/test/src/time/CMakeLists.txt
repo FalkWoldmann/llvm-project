@@ -148,6 +148,21 @@ add_libc_test(
 )
 
 add_libc_test(
+  clock_nanosleep_test
+  SUITE
+    libc-time-tests
+  SRCS
+    clock_nanosleep_test.cpp
+  DEPENDS
+    libc.hdr.errno_macros
+    libc.hdr.time_macros
+    libc.hdr.types.struct_timespec
+    libc.src.time.clock_gettime
+    libc.src.time.clock_nanosleep
+    libc.test.UnitTest.ErrnoCheckingTest
+)
+
+add_libc_test(
   clock_settime_test
   SUITE
     libc-time-tests

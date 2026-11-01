@@ -81,7 +81,8 @@ SparcTargetMachine::SparcTargetMachine(const Target &T, const Triple &TT,
           getEffectiveSparcCodeModel(CM, getEffectiveRelocModel(RM),
                                      TT.isSPARC64(), JIT),
           OL),
-      CLOpts(SparcOptions::Global),
+      CLOpts(cl::LibraryOptionsContext::get<SparcOptions>(
+          Options.MCOptions.LibraryOptions)),
       TLOF(std::make_unique<SparcELFTargetObjectFile>()) {
   initAsmInfo();
 }
@@ -155,7 +156,8 @@ void SparcPassConfig::addIRPasses() {
 }
 
 bool SparcPassConfig::addInstSelector() {
-  addPass(createSparcISelDag(getSparcTargetMachine()));
+  addPass(createSparcDAGToDAGISelLegacyPass(getSparcTargetMachine(),
+                                            getOptLevel()));
   return false;
 }
 
@@ -163,7 +165,7 @@ void SparcPassConfig::addPreEmitPass(){
   if (getSparcTargetMachine().getCLOpts().enable_branch_relax)
     addPass(&BranchRelaxationPassID);
 
-  addPass(createSparcDelaySlotFillerPass());
+  addPass(createSparcDelaySlotFillerLegacyPass());
   addPass(new InsertNOPLoad());
   addPass(new DetectRoundChange());
   addPass(new FixAllFDIVSQRT());

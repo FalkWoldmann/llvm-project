@@ -107,7 +107,6 @@ list(APPEND CLANG_TEST_DEPS
   clang-ssaf-analyzer
   clang-ssaf-format
   clang-ssaf-linker
-  clang-ssaf-orchestrator-make
   clang-ssaf-src-edit-merge
   clang-sycl-linker
   diagtool
@@ -118,7 +117,11 @@ if(CLANG_ENABLE_CIR)
   list(APPEND CLANG_TEST_DEPS
     cir-opt
     cir-translate
+    llvm-strings
     )
+  if(NOT CLANG_BUILT_STANDALONE)
+    list(APPEND CLANG_TEST_DEPS llvm-strings)
+  endif()
   add_subdirectory(CIR/lib)
 endif()
 
